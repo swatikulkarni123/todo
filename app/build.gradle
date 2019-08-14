@@ -4,6 +4,8 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-kapt'
+
 android {
     compileSdkVersion 29
     defaultConfig {
@@ -20,6 +22,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    dataBinding {
+        enabled true
+    }
 }
 
 dependencies {
@@ -31,4 +37,15 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+    implementation "org.jetbrains.anko:anko-commons:0.10.8"
+
+
+    //room
+
+    implementation 'androidx.room:room-testing:2.2.0-alpha02'
+    kapt 'android.arch.persistence.room:compiler:1.1.1'
+    implementation 'android.arch.persistence.room:runtime:1.1.1'
 }
