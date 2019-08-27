@@ -1,34 +1,32 @@
 package com.example.todolistinkotlin
 
-import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todolistinkotlin.databinding.ActivityMainBinding
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.alert
-import org.jetbrains.anko.startActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : AppCompatActivity(), OnItemClick {
 
-    val list  = mutableListOf<ToDoListData>()
+    val list = mutableListOf<ToDoListData>()
 
     val c = Calendar.getInstance()
-    val month : Int = c.get(Calendar.MONTH)
-    val year : Int = c.get(Calendar.YEAR)
-    val day : Int = c.get(Calendar.DAY_OF_MONTH)
 
-    private val listAdapter = ListAdapter(list,this)
+    val month: Int = c.get(Calendar.MONTH)
+    val year: Int = c.get(Calendar.YEAR)
+    val day: Int = c.get(Calendar.DAY_OF_MONTH)
+
+    var cal = Calendar.getInstance()
+
+    private val listAdapter = ListAdapter(list, this)
 
     private lateinit var binding: ActivityMainBinding
 
@@ -38,7 +36,7 @@ class MainActivity : AppCompatActivity(), OnItemClick {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = DataBindingUtil.setContentView(this,R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.lifecycleOwner = this
         viewModel = ViewModelProviders.of(this).get(ToDoListViewModel::class.java)
 
@@ -49,15 +47,24 @@ class MainActivity : AppCompatActivity(), OnItemClick {
 
         viewModel.getPreviousList()
 
-        viewModel.toDoList.observe(this,androidx.lifecycle.Observer {
+        viewModel.toDoList.observe(this, androidx.lifecycle.Observer {
             //list.addAll(it)
-            if(it==null)
+            if (it == null)
                 return@Observer
 
             list.clear()
             val tempList = mutableListOf<ToDoListData>()
             it.forEach {
-                tempList.add(ToDoListData(title = it.title, date = it.date , time = it.time,indexDb = it.id))
+                tempList.add(
+                    ToDoListData(
+                        title = it.title,
+                        date = it.date,
+                        time = it.time,
+                        indexDb = it.id,
+                        isShow = it.isShow
+                    )
+                )
+
             }
 
             list.addAll(tempList)
@@ -68,60 +75,84 @@ class MainActivity : AppCompatActivity(), OnItemClick {
         })
 
         viewModel.toDoListData.observe(this, androidx.lifecycle.Observer {
-            if(viewModel.position !=-1){
-                list.set(viewModel.position,it)
+            if (viewModel.position != -1) {
+                list.set(viewModel.position, it)
                 listAdapter.notifyItemChanged(viewModel.position)
-            }else {
+            } else {
                 list.add(it)
                 listAdapter.notifyDataSetChanged()
             }
             viewModel.position = -1;
         })
 
-        etdate.setOnClickListener{
+        etdate.setOnClickListener {
 
             val dpd = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
 
                 // Display Selected date in textbox
-                etdate.setText("" + dayOfMonth + "/" + (monthOfYear+1) + "/" + year)
+                etdate.setText("" + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year)
+                viewModel.month = monthOfYear
+                viewModel.year = year
+                viewModel.day = dayOfMonth
             }, year, month, day)
 
             dpd.datePicker.minDate = System.currentTimeMillis() - 1000
-
             dpd.show()
 
         }
-
         etTime.setOnClickListener {
             val cal = Calendar.getInstance()
             val timeSetListener = TimePickerDialog.OnTimeSetListener { timePicker, hour, minute ->
                 cal.set(Calendar.HOUR_OF_DAY, hour)
                 cal.set(Calendar.MINUTE, minute)
+                this.cal.set(Calendar.HOUR_OF_DAY, hour)
+                this.cal.set(Calendar.MINUTE, minute)
+
+                viewModel.hour = hour
+                viewModel.minute = minute
+
                 etTime.setText(SimpleDateFormat("HH:mm").format(cal.time))
             }
-            TimePickerDialog(this, timeSetListener, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true).show()
+
+            this.cal = cal
+            TimePickerDialog(
+                this,
+                timeSetListener,
+                cal.get(Calendar.HOUR_OF_DAY),
+                cal.get(Calendar.MINUTE),
+                true
+            ).show()
         }
     }
 
 
-    override fun onItemClick(v: View , position : Int) {
+    override fun onResume() {
+        super.onResume()
+    }
+
+
+    override fun onItemClick(v: View, position: Int) {
 
 
         alert {
-               message = list.get(position).title
-               positiveButton("Edit") {
-                   viewModel.title.set(list.get(position).title)
-                   viewModel.date.set(list.get(position).date)
-                   viewModel.time.set(list.get(position).time)
-                   viewModel.position = position
-                   viewModel.index = list.get(position).indexDb
-                   editText.isFocusable = true
-               }
-           negativeButton("Delete") {
-               viewModel.delete(list.get(position).indexDb)
-           }
+            message = list.get(position).title
+            positiveButton("Edit") {
+                viewModel.title.set(list.get(position).title)
+                viewModel.date.set(list.get(position).date)
+                viewModel.time.set(list.get(position).time)
+                viewModel.position = position
+                viewModel.index = list.get(position).indexDb
+                editText.isFocusable = true
+            }
+            negativeButton("Delete") {
+                viewModel.delete(list.get(position).indexDb)
+            }
 
         }.show()
 
+    }
+
+    override fun onStop() {
+        super.onStop()
     }
 }

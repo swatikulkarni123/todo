@@ -39,7 +39,7 @@
         <Button
                 android:onClick="@{ (v) -> vieModel.click(v)}"
                 android:id="@+id/bAddList"
-                android:text="@string/button"
+                android:text="@string/add"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"

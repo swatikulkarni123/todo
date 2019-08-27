@@ -26,4 +26,7 @@ interface ToDoListDAO {
 
     @Query("DELETE From todolist where id = :id")
     fun Delete(id : Long)
+
+    @Query("UPDATE todolist Set isShow = :isShow  where id LIKE :id")
+    fun isShownUpdate(id:Long , isShow : Int)
 }
