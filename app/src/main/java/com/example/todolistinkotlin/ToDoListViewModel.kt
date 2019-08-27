@@ -85,7 +85,7 @@ class ToDoListViewModel(val context: Application) : AndroidViewModel(context) {
             cal.set(Calendar.MINUTE, minute)
 
             Log.d("Alarm Title","$month , $date : ${cal.time}")
-            setAlarm(cal, 0, id, title)
+            setAlarm(cal, 0, id, title,hour,minute)
 
         }
 
@@ -109,7 +109,7 @@ class ToDoListViewModel(val context: Application) : AndroidViewModel(context) {
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    fun setAlarm(calender: Calendar, i: Int, id: Long, title: String) {
+    fun setAlarm(calender: Calendar, i: Int, id: Long, title: String, hour:Int,minute:Int) {
 
         val alarmManager: AlarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
@@ -118,6 +118,7 @@ class ToDoListViewModel(val context: Application) : AndroidViewModel(context) {
         intent.putExtra("isShow", i)
         intent.putExtra("id", id)
         intent.putExtra("title", title)
+        intent.putExtra("date","Time-> $hour:$minute")
         val pandingIntent: PendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         if (i == 0) {

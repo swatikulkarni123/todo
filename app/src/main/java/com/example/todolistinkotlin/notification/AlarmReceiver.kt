@@ -34,8 +34,8 @@ class AlarmReceiver : BroadcastReceiver() {
         var isShow = intent?.getIntExtra("isShow", 0) ?: 0
         val dbId = intent?.getLongExtra("id", -1) ?: -1
         val title = intent?.getStringExtra("title") ?: ""
+        val date = intent?.getStringExtra("date")?:""
         Log.d("Alarm Title", "tilte : " + title)
-
 
         val icon = R.drawable.ic_launcher_background
 
@@ -53,6 +53,7 @@ class AlarmReceiver : BroadcastReceiver() {
         val notification = NotificationCompat.Builder(context, "Remainder")
             .setSmallIcon(icon)
             .setContentTitle(title)
+            .setContentText(date)
             .setPriority(NotificationCompat.VISIBILITY_PUBLIC)
             .setColor(Color.RED)
             .setGroup(GROUP_MESSAGE)

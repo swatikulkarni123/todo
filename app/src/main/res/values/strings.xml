@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TODOLISTINKOTLIN</string>
+    <string name="app_name">TODO</string>
     <string name="button">Button</string>
     <string name="add_title">Add Title</string>
     <string name="add_date">Add date</string>
