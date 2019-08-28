@@ -6,11 +6,15 @@
         <variable name="title" type="String"/>
         <variable name="toDoList"
                   type="com.example.todolistinkotlin.ToDoListData"/>
+        <variable name="isRead" type="boolean"/>
     </data>
     <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_margin="10dp"
-            android:layout_height="wrap_content">
+            android:elevation="@{isRead ? 0 : 10}"
+            app:cardElevation="@{isRead ? 0 : 10}"
+            android:layout_height="wrap_content"
+            tools:targetApi="lollipop">
 
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -25,6 +29,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/tvTitle"
+                    android:textStyle="bold"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -36,7 +41,7 @@
                       android:layout_height="wrap_content"
                       app:layout_constraintStart_toStartOf="parent"
                       app:layout_constraintEnd_toEndOf="parent"
-                      android:textSize="20sp"
+                      android:textSize="15sp"
                       tools:text="Date"
                       android:text="@{toDoList.date}"
                       app:layout_constraintTop_toBottomOf="@+id/tvTitle"
@@ -47,7 +52,7 @@
                     android:text="@{toDoList.time}"
                     android:layout_width="0dp"
                     tools:text="Time"
-                    android:textSize="20sp"
+                    android:textSize="15sp"
                     android:layout_height="wrap_content"
                     android:id="@+id/textView"
                     android:layout_marginTop="8dp"

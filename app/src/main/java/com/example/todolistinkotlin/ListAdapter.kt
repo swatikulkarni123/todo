@@ -37,6 +37,7 @@ class ListViewHolder(val binding: ItemTolistBinding, val onClick: OnItemClick) :
 
     fun bindData(toDoListData: ToDoListData) {
         binding.toDoList = toDoListData
+        binding.isRead = toDoListData.isShow==1
         binding.root.setOnClickListener(this)
     }
 }

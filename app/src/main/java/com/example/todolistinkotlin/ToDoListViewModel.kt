@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
 import androidx.databinding.ObservableField
@@ -58,11 +59,12 @@ class ToDoListViewModel(val context: Application) : AndroidViewModel(context) {
         Log.d("Click", "click")
         if (title.get().toString().isNotBlank() && date.get().toString().isNotBlank() && time.get().toString().isNotBlank()) {
             addData(title.get().toString(), date.get().toString(), time.get().toString(), id = index)
+            title.set("")
+            date.set("")
+            time.set("")
+        }else{
+            Toast.makeText(context,"Enter All Filed data",Toast.LENGTH_SHORT).show()
         }
-
-        title.set("")
-        date.set("")
-        time.set("")
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -72,7 +74,7 @@ class ToDoListViewModel(val context: Application) : AndroidViewModel(context) {
         if (position != -1) {
             database?.toDoListDao()?.update(title = title, date = date, time = time, id = id)
         } else {
-            database?.toDoListDao()?.insert(ToDoListDataEntity(title = title, date = date, time = time, isShow = 0))
+            val newId = database?.toDoListDao()?.insert(ToDoListDataEntity(title = title, date = date, time = time, isShow = 0))
 
             val cal : Calendar = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault())
 
@@ -85,7 +87,9 @@ class ToDoListViewModel(val context: Application) : AndroidViewModel(context) {
             cal.set(Calendar.MINUTE, minute)
 
             Log.d("Alarm Title","$month , $date : ${cal.time}")
-            setAlarm(cal, 0, id, title,hour,minute)
+            newId?.let {
+                setAlarm(cal, 0, it, title,hour,minute)
+            }
 
         }
 

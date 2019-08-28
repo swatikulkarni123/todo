@@ -14,7 +14,7 @@ interface ToDoListDAO {
     fun getAll(): List<ToDoListDataEntity>
 
     @Insert
-    fun insert(toDoListData: ToDoListDataEntity)
+    fun insert(toDoListData: ToDoListDataEntity) : Long
 
     @Query("UPDATE todolist  SET title = :title, date =:date, time = :time  where id LIKE :id")
     fun update(
@@ -29,4 +29,7 @@ interface ToDoListDAO {
 
     @Query("UPDATE todolist Set isShow = :isShow  where id LIKE :id")
     fun isShownUpdate(id:Long , isShow : Int)
+
+    @Query("SELECT * from todolist where id Like :id")
+    fun get(id : Long): ToDoListDataEntity
 }

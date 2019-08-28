@@ -34,8 +34,8 @@ class AlarmReceiver : BroadcastReceiver() {
         var isShow = intent?.getIntExtra("isShow", 0) ?: 0
         val dbId = intent?.getLongExtra("id", -1) ?: -1
         val title = intent?.getStringExtra("title") ?: ""
-        val date = intent?.getStringExtra("date")?:""
-        Log.d("Alarm Title", "tilte : " + title)
+        val time = intent?.getStringExtra("date")?:""
+        Log.d("Alarm Title", "title : $title")
 
         val icon = R.drawable.ic_launcher_background
 
@@ -53,7 +53,7 @@ class AlarmReceiver : BroadcastReceiver() {
         val notification = NotificationCompat.Builder(context, "Remainder")
             .setSmallIcon(icon)
             .setContentTitle(title)
-            .setContentText(date)
+            .setContentText(time)
             .setPriority(NotificationCompat.VISIBILITY_PUBLIC)
             .setColor(Color.RED)
             .setGroup(GROUP_MESSAGE)
@@ -61,9 +61,14 @@ class AlarmReceiver : BroadcastReceiver() {
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .build()
 
+
         notificationManager.notify(getNumber(), notification)
 
         toDoListDatabase?.toDoListDao()?.isShownUpdate(id = dbId, isShow = 1)
+
+        val list = toDoListDatabase?.toDoListDao()?.get(dbId)
+
+        Log.d("IsRead","isRead "+list?.isShow)
 
     }
 
